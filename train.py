@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -31,6 +32,10 @@ def main():
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=20, gamma=0.1)
 
     best_acc = 0.0
+
+    # 저장할 폴더 생성
+    save_dir = 'pth'
+    os.makedirs(save_dir, exist_ok=True)
 
     for epoch in range(config.NUM_EPOCHS):
         model.train()
@@ -74,8 +79,9 @@ def main():
 
         if val_acc > best_acc:
             best_acc = val_acc
-            torch.save(model.state_dict(), 'best_mgsampler.pth')
-            print(f"Saved Best Model (Acc: {best_acc:.2f}%)")
+            save_path = os.path.join(save_dir, 'best_mgsampler.pth')
+            torch.save(model.state_dict(), save_path)
+            print(f"Saved Best Model to {save_path} (Acc: {best_acc:.2f}%)")
 
 if __name__ == '__main__':
     main()
